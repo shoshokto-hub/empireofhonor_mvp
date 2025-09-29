@@ -3,17 +3,21 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using EmpireOfHonor.Gameplay;
 using EmpireOfHonor.Input;
 using EmpireOfHonor.UI;
+
+#if ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem;
+#endif
 
 namespace EmpireOfHonor.Editor
 {
     /// <summary>
     /// Provides a menu entry to build a ready-to-play scene with required components.
     /// </summary>
+#if ENABLE_INPUT_SYSTEM
     public static class ReadySceneBuilder
     {
         private const string MenuPath = "Alaia Iva/Create READY Scene (Input System)";
@@ -308,5 +312,17 @@ namespace EmpireOfHonor.Editor
             property.enumValueIndex = value;
             property.serializedObject.ApplyModifiedPropertiesWithoutUndo();
         }
+#else
+    public static class ReadySceneBuilder
+    {
+        private const string MenuPath = "Alaia Iva/Create READY Scene (Input System)";
+
+        [MenuItem(MenuPath)]
+        public static void CreateReadyScene()
+        {
+            Debug.LogError(
+                "The READY scene builder requires the Unity Input System package. Please enable it in Project Settings > Player.");
+        }
     }
+#endif
 }

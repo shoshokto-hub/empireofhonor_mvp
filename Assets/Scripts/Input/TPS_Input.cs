@@ -1,7 +1,7 @@
 using UnityEngine;
 using EmpireOfHonor.Gameplay;
 
-#if ENABLE_INPUT_SYSTEM && UNITY_INPUT_SYSTEM_EXISTS
+#if ENABLE_INPUT_SYSTEM
 #define INPUT_SYSTEM_ENABLED
 #endif
 

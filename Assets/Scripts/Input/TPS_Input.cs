@@ -1,12 +1,16 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 using EmpireOfHonor.Gameplay;
+
+#if ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem;
+#endif
 
 namespace EmpireOfHonor.Input
 {
     /// <summary>
     /// Handles third-person player input using the Unity Input System.
     /// </summary>
+#if ENABLE_INPUT_SYSTEM
     [RequireComponent(typeof(CharacterController))]
     [RequireComponent(typeof(Weapon))]
     [RequireComponent(typeof(Health))]
@@ -186,4 +190,17 @@ namespace EmpireOfHonor.Input
             reference?.action?.Disable();
         }
     }
+#else
+    [RequireComponent(typeof(CharacterController))]
+    [RequireComponent(typeof(Weapon))]
+    [RequireComponent(typeof(Health))]
+    public class TPS_Input : MonoBehaviour
+    {
+        private void Awake()
+        {
+            Debug.LogWarning(
+                "TPS_Input requires the Unity Input System package. Please enable it in Project Settings > Player.");
+        }
+    }
+#endif
 }

@@ -1,11 +1,15 @@
 using UnityEngine;
+
+#if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
+#endif
 
 namespace EmpireOfHonor.Input
 {
     /// <summary>
     /// Switches between TPS and tactical cameras and toggles the appropriate action maps.
     /// </summary>
+#if ENABLE_INPUT_SYSTEM
     [RequireComponent(typeof(PlayerInput))]
     public class CameraSwitcher_Input : MonoBehaviour
     {
@@ -104,4 +108,52 @@ namespace EmpireOfHonor.Input
             }
         }
     }
+#else
+    public class CameraSwitcher_Input : MonoBehaviour
+    {
+        [SerializeField] private Camera tpsCamera;
+        [SerializeField] private Camera tacticalCamera;
+        [SerializeField] private TPS_Input tpsController;
+        [SerializeField] private Tactical_Input tacticalController;
+        [SerializeField] private CommandOverlay_Input commandOverlay;
+
+        private void Awake()
+        {
+            Debug.LogWarning(
+                "CameraSwitcher_Input requires the Unity Input System package. Please enable it in Project Settings > Player.");
+        }
+
+        private void Start()
+        {
+            // Ensure the tactical overlay still knows about the default mode even without input switching.
+            if (commandOverlay != null)
+            {
+                commandOverlay.SetTacticalMode(false);
+            }
+
+            if (tpsCamera != null)
+            {
+                tpsCamera.gameObject.SetActive(true);
+            }
+
+            if (tacticalCamera != null)
+            {
+                tacticalCamera.gameObject.SetActive(false);
+            }
+
+            if (tpsController != null)
+            {
+                tpsController.enabled = true;
+            }
+
+            if (tacticalController != null)
+            {
+                tacticalController.enabled = false;
+            }
+
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+    }
+#endif
 }

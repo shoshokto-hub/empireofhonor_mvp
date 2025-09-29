@@ -316,6 +316,7 @@ namespace EmpireOfHonor.Editor
             property.enumValueIndex = value;
             property.serializedObject.ApplyModifiedPropertiesWithoutUndo();
         }
+    }
 #else
     public static class ReadySceneBuilder
     {

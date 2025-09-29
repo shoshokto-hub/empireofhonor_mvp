@@ -1,6 +1,10 @@
 using UnityEngine;
 
-#if ENABLE_INPUT_SYSTEM
+#if ENABLE_INPUT_SYSTEM && UNITY_INPUT_SYSTEM_EXISTS
+#define INPUT_SYSTEM_ENABLED
+#endif
+
+#if INPUT_SYSTEM_ENABLED
 using UnityEngine.InputSystem;
 #endif
 
@@ -18,7 +22,7 @@ namespace EmpireOfHonor.Input
         [SerializeField] private float minHeight = 8f;
         [SerializeField] private float maxHeight = 40f;
 
-#if ENABLE_INPUT_SYSTEM
+#if INPUT_SYSTEM_ENABLED
         [Header("Input Actions")]
         [SerializeField] private InputActionReference panAction;
         [SerializeField] private InputActionReference rotateLeftAction;
@@ -35,7 +39,7 @@ namespace EmpireOfHonor.Input
 
         private void OnEnable()
         {
-#if ENABLE_INPUT_SYSTEM
+#if INPUT_SYSTEM_ENABLED
             EnableAction(panAction);
             EnableAction(rotateLeftAction);
             EnableAction(rotateRightAction);
@@ -48,7 +52,7 @@ namespace EmpireOfHonor.Input
 
         private void OnDisable()
         {
-#if ENABLE_INPUT_SYSTEM
+#if INPUT_SYSTEM_ENABLED
             DisableAction(panAction);
             DisableAction(rotateLeftAction);
             DisableAction(rotateRightAction);
@@ -58,14 +62,14 @@ namespace EmpireOfHonor.Input
 
         private void Update()
         {
-#if ENABLE_INPUT_SYSTEM
+#if INPUT_SYSTEM_ENABLED
             HandlePan();
             HandleRotation();
             HandleZoom();
 #endif
         }
 
-#if ENABLE_INPUT_SYSTEM
+#if INPUT_SYSTEM_ENABLED
         private void HandlePan()
         {
             if (panAction == null)

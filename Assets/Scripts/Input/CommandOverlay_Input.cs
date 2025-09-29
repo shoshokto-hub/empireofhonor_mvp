@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.AI;
 using EmpireOfHonor.Gameplay;
+
+#if ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem;
+#endif
 
 namespace EmpireOfHonor.Input
 {
@@ -24,6 +27,7 @@ namespace EmpireOfHonor.Input
         [SerializeField] private float navMeshSampleDistance = 5f;
         [SerializeField] private UnitGroup[] groups = new UnitGroup[4];
 
+#if ENABLE_INPUT_SYSTEM
         [Header("Input Actions")]
         [SerializeField] private InputActionReference commandAction;
         [SerializeField] private InputActionReference holdAction;
@@ -32,18 +36,24 @@ namespace EmpireOfHonor.Input
         [SerializeField] private InputActionReference selectGroup2Action;
         [SerializeField] private InputActionReference selectGroup3Action;
         [SerializeField] private InputActionReference selectGroup4Action;
+#endif
 
         private bool tacticalMode;
         private int currentGroupIndex;
 
         private void OnEnable()
         {
+#if ENABLE_INPUT_SYSTEM
             EnableAction(commandAction, HandleCommand);
             EnableAction(holdAction, HandleHold);
             EnableAction(selectGroup1Action, HandleSelectGroup1);
             EnableAction(selectGroup2Action, HandleSelectGroup2);
             EnableAction(selectGroup3Action, HandleSelectGroup3);
             EnableAction(selectGroup4Action, HandleSelectGroup4);
+#else
+            Debug.LogWarning(
+                "CommandOverlay_Input requires the Unity Input System package. Please enable it in Project Settings > Player.");
+#endif
 
             if (groups == null || groups.Length == 0)
             {
@@ -53,12 +63,14 @@ namespace EmpireOfHonor.Input
 
         private void OnDisable()
         {
+#if ENABLE_INPUT_SYSTEM
             DisableAction(commandAction, HandleCommand);
             DisableAction(holdAction, HandleHold);
             DisableAction(selectGroup1Action, HandleSelectGroup1);
             DisableAction(selectGroup2Action, HandleSelectGroup2);
             DisableAction(selectGroup3Action, HandleSelectGroup3);
             DisableAction(selectGroup4Action, HandleSelectGroup4);
+#endif
         }
 
         /// <summary>
@@ -67,6 +79,64 @@ namespace EmpireOfHonor.Input
         public void SetTacticalMode(bool value)
         {
             tacticalMode = value;
+        }
+
+        private IReadOnlyList<UnitController> GetCurrentGroup()
+        {
+            if (groups == null || groups.Length == 0)
+            {
+                return Array.Empty<UnitController>();
+            }
+
+            if (currentGroupIndex < 0 || currentGroupIndex >= groups.Length || groups[currentGroupIndex] == null)
+            {
+                return Array.Empty<UnitController>();
+            }
+
+            return groups[currentGroupIndex].units;
+        }
+
+        private void SelectGroup(int index)
+        {
+            if (index < 0 || groups == null || index >= groups.Length)
+            {
+                return;
+            }
+
+            currentGroupIndex = index;
+        }
+
+#if ENABLE_INPUT_SYSTEM
+        private void HandleSelectGroup1(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                SelectGroup(0);
+            }
+        }
+
+        private void HandleSelectGroup2(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                SelectGroup(1);
+            }
+        }
+
+        private void HandleSelectGroup3(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                SelectGroup(2);
+            }
+        }
+
+        private void HandleSelectGroup4(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                SelectGroup(3);
+            }
         }
 
         private void HandleCommand(InputAction.CallbackContext context)
@@ -158,63 +228,6 @@ namespace EmpireOfHonor.Input
             return new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
         }
 
-        private IReadOnlyList<UnitController> GetCurrentGroup()
-        {
-            if (groups == null || groups.Length == 0)
-            {
-                return Array.Empty<UnitController>();
-            }
-
-            if (currentGroupIndex < 0 || currentGroupIndex >= groups.Length || groups[currentGroupIndex] == null)
-            {
-                return Array.Empty<UnitController>();
-            }
-
-            return groups[currentGroupIndex].units;
-        }
-
-        private void SelectGroup(int index)
-        {
-            if (index < 0 || groups == null || index >= groups.Length)
-            {
-                return;
-            }
-
-            currentGroupIndex = index;
-        }
-
-        private void HandleSelectGroup1(InputAction.CallbackContext context)
-        {
-            if (context.performed)
-            {
-                SelectGroup(0);
-            }
-        }
-
-        private void HandleSelectGroup2(InputAction.CallbackContext context)
-        {
-            if (context.performed)
-            {
-                SelectGroup(1);
-            }
-        }
-
-        private void HandleSelectGroup3(InputAction.CallbackContext context)
-        {
-            if (context.performed)
-            {
-                SelectGroup(2);
-            }
-        }
-
-        private void HandleSelectGroup4(InputAction.CallbackContext context)
-        {
-            if (context.performed)
-            {
-                SelectGroup(3);
-            }
-        }
-
         private void EnableAction(InputActionReference actionReference, Action<InputAction.CallbackContext> handler)
         {
             if (actionReference == null || handler == null)
@@ -236,5 +249,6 @@ namespace EmpireOfHonor.Input
             actionReference.action.performed -= handler;
             actionReference.action.Disable();
         }
+#endif
     }
 }

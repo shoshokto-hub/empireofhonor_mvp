@@ -1,5 +1,8 @@
 using UnityEngine;
+
+#if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
+#endif
 
 namespace EmpireOfHonor.Input
 {
@@ -15,11 +18,13 @@ namespace EmpireOfHonor.Input
         [SerializeField] private float minHeight = 8f;
         [SerializeField] private float maxHeight = 40f;
 
+#if ENABLE_INPUT_SYSTEM
         [Header("Input Actions")]
         [SerializeField] private InputActionReference panAction;
         [SerializeField] private InputActionReference rotateLeftAction;
         [SerializeField] private InputActionReference rotateRightAction;
         [SerializeField] private InputActionReference zoomAction;
+#endif
 
         private Transform cachedTransform;
 
@@ -30,27 +35,37 @@ namespace EmpireOfHonor.Input
 
         private void OnEnable()
         {
+#if ENABLE_INPUT_SYSTEM
             EnableAction(panAction);
             EnableAction(rotateLeftAction);
             EnableAction(rotateRightAction);
             EnableAction(zoomAction);
+#else
+            Debug.LogWarning(
+                "Tactical_Input requires the Unity Input System package. Please enable it in Project Settings > Player.");
+#endif
         }
 
         private void OnDisable()
         {
+#if ENABLE_INPUT_SYSTEM
             DisableAction(panAction);
             DisableAction(rotateLeftAction);
             DisableAction(rotateRightAction);
             DisableAction(zoomAction);
+#endif
         }
 
         private void Update()
         {
+#if ENABLE_INPUT_SYSTEM
             HandlePan();
             HandleRotation();
             HandleZoom();
+#endif
         }
 
+#if ENABLE_INPUT_SYSTEM
         private void HandlePan()
         {
             if (panAction == null)
@@ -117,5 +132,6 @@ namespace EmpireOfHonor.Input
         {
             reference?.action?.Disable();
         }
+#endif
     }
 }

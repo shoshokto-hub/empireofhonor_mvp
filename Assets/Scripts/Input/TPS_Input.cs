@@ -1,7 +1,11 @@
 using UnityEngine;
 using EmpireOfHonor.Gameplay;
 
-#if ENABLE_INPUT_SYSTEM
+#if ENABLE_INPUT_SYSTEM && UNITY_INPUT_SYSTEM_EXISTS
+#define INPUT_SYSTEM_ENABLED
+#endif
+
+#if INPUT_SYSTEM_ENABLED
 using UnityEngine.InputSystem;
 #endif
 
@@ -10,7 +14,7 @@ namespace EmpireOfHonor.Input
     /// <summary>
     /// Handles third-person player input using the Unity Input System.
     /// </summary>
-#if ENABLE_INPUT_SYSTEM
+#if INPUT_SYSTEM_ENABLED
     [RequireComponent(typeof(CharacterController))]
     [RequireComponent(typeof(Weapon))]
     [RequireComponent(typeof(Health))]

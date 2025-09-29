@@ -1,6 +1,10 @@
 using UnityEngine;
 
-#if ENABLE_INPUT_SYSTEM
+#if ENABLE_INPUT_SYSTEM && UNITY_INPUT_SYSTEM_EXISTS
+#define INPUT_SYSTEM_ENABLED
+#endif
+
+#if INPUT_SYSTEM_ENABLED
 using UnityEngine.InputSystem;
 #endif
 
@@ -9,7 +13,7 @@ namespace EmpireOfHonor.Input
     /// <summary>
     /// Switches between TPS and tactical cameras and toggles the appropriate action maps.
     /// </summary>
-#if ENABLE_INPUT_SYSTEM
+#if INPUT_SYSTEM_ENABLED
     [RequireComponent(typeof(PlayerInput))]
     public class CameraSwitcher_Input : MonoBehaviour
     {

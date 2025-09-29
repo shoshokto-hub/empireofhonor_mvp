@@ -4,7 +4,11 @@ using UnityEngine;
 using UnityEngine.AI;
 using EmpireOfHonor.Gameplay;
 
-#if ENABLE_INPUT_SYSTEM
+#if ENABLE_INPUT_SYSTEM && UNITY_INPUT_SYSTEM_EXISTS
+#define INPUT_SYSTEM_ENABLED
+#endif
+
+#if INPUT_SYSTEM_ENABLED
 using UnityEngine.InputSystem;
 #endif
 
@@ -27,7 +31,7 @@ namespace EmpireOfHonor.Input
         [SerializeField] private float navMeshSampleDistance = 5f;
         [SerializeField] private UnitGroup[] groups = new UnitGroup[4];
 
-#if ENABLE_INPUT_SYSTEM
+#if INPUT_SYSTEM_ENABLED
         [Header("Input Actions")]
         [SerializeField] private InputActionReference commandAction;
         [SerializeField] private InputActionReference holdAction;
@@ -43,7 +47,7 @@ namespace EmpireOfHonor.Input
 
         private void OnEnable()
         {
-#if ENABLE_INPUT_SYSTEM
+#if INPUT_SYSTEM_ENABLED
             EnableAction(commandAction, HandleCommand);
             EnableAction(holdAction, HandleHold);
             EnableAction(selectGroup1Action, HandleSelectGroup1);
@@ -63,7 +67,7 @@ namespace EmpireOfHonor.Input
 
         private void OnDisable()
         {
-#if ENABLE_INPUT_SYSTEM
+#if INPUT_SYSTEM_ENABLED
             DisableAction(commandAction, HandleCommand);
             DisableAction(holdAction, HandleHold);
             DisableAction(selectGroup1Action, HandleSelectGroup1);
@@ -106,7 +110,7 @@ namespace EmpireOfHonor.Input
             currentGroupIndex = index;
         }
 
-#if ENABLE_INPUT_SYSTEM
+#if INPUT_SYSTEM_ENABLED
         private void HandleSelectGroup1(InputAction.CallbackContext context)
         {
             if (context.performed)
@@ -210,9 +214,14 @@ namespace EmpireOfHonor.Input
 
         private bool IsModifierActive()
         {
+#if INPUT_SYSTEM_ENABLED
             return modifierAltAction != null && modifierAltAction.action.IsPressed();
+#else
+            return false;
+#endif
         }
 
+#if INPUT_SYSTEM_ENABLED
         private Vector2 GetPointerPosition()
         {
             if (Mouse.current != null)

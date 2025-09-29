@@ -8,7 +8,11 @@ using EmpireOfHonor.Gameplay;
 using EmpireOfHonor.Input;
 using EmpireOfHonor.UI;
 
-#if ENABLE_INPUT_SYSTEM
+#if ENABLE_INPUT_SYSTEM && UNITY_INPUT_SYSTEM_EXISTS
+#define INPUT_SYSTEM_ENABLED
+#endif
+
+#if INPUT_SYSTEM_ENABLED
 using UnityEngine.InputSystem;
 #endif
 
@@ -17,7 +21,7 @@ namespace EmpireOfHonor.Editor
     /// <summary>
     /// Provides a menu entry to build a ready-to-play scene with required components.
     /// </summary>
-#if ENABLE_INPUT_SYSTEM
+#if INPUT_SYSTEM_ENABLED
     public static class ReadySceneBuilder
     {
         private const string MenuPath = "Alaia Iva/Create READY Scene (Input System)";
